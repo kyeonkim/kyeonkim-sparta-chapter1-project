@@ -1,4 +1,4 @@
-package com.sparta.msa_exam.product.products;
+package com.sparta.msa_exam.product.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductResponseDto {
-    private Long product_id;
+    private Long productId;
     private String name;
-    private Integer supply_price;
+    private Integer price;
 }

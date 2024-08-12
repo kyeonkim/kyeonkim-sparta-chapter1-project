@@ -1,6 +1,6 @@
-package com.sparta.msa_exam.product.core;
+package com.sparta.msa_exam.product.domain;
 
-import com.sparta.msa_exam.product.products.ProductRequestDto;
+import com.sparta.msa_exam.product.dto.ProductRequestDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,15 +13,19 @@ import lombok.*;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
+    @Column(name = "name")
     private String name;
-    private Integer supply_price;
+
+    @Column(name = "supply_price")
+    private Integer price;
 
     public static Product createProduct(ProductRequestDto requestDto) {
         return Product.builder()
                 .name(requestDto.getName())
-                .supply_price(requestDto.getSupply_price())
+                .price(requestDto.getSupplyPrice())
                 .build();
     }
 }
