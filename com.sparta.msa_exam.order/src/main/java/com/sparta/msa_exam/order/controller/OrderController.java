@@ -1,14 +1,12 @@
 package com.sparta.msa_exam.order.controller;
 
+import com.sparta.msa_exam.order.dto.OrderProductRequestDto;
 import com.sparta.msa_exam.order.dto.OrderRequestDto;
 import com.sparta.msa_exam.order.service.OrderService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/order")
@@ -27,6 +25,16 @@ public class OrderController {
     @PostMapping
     public ResponseEntity<Boolean> createOrder(@RequestBody OrderRequestDto orderRequestDto) {
         orderService.createOrder(orderRequestDto);
+        return createResponse(ResponseEntity.ok(true));
+    }
+
+    // 주문에 상품 추가
+    @PutMapping("/{orderId}")
+    public ResponseEntity<Boolean> addProductToOrder(
+            @PathVariable(name = "orderId") Long orderId,
+            @RequestBody OrderProductRequestDto orderProductRequestDto
+            ) {
+        orderService.addProductToOrder(orderId, orderProductRequestDto.getProductId());
         return createResponse(ResponseEntity.ok(true));
     }
 

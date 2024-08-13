@@ -32,4 +32,8 @@ public class Order {
                 .name(orderRequestDto.getName())
                 .build();
     }
+
+    public void addProduct(OrderProduct orderProduct) {
+        productIds.add(orderProduct);
+    }
 }
