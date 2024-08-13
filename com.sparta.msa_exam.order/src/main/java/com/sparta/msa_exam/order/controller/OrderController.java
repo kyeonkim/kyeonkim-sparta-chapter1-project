@@ -2,6 +2,7 @@ package com.sparta.msa_exam.order.controller;
 
 import com.sparta.msa_exam.order.dto.OrderProductRequestDto;
 import com.sparta.msa_exam.order.dto.OrderRequestDto;
+import com.sparta.msa_exam.order.dto.OrderResponseDto;
 import com.sparta.msa_exam.order.service.OrderService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -36,6 +37,12 @@ public class OrderController {
             ) {
         orderService.addProductToOrder(orderId, orderProductRequestDto.getProductId());
         return createResponse(ResponseEntity.ok(true));
+    }
+
+    // 주문 단건 조회
+    @GetMapping("/{orderId}")
+    public ResponseEntity<OrderResponseDto> getOrder(@PathVariable(name = "orderId") Long orderId) {
+        return createResponse(ResponseEntity.ok(orderService.getOrder(orderId)));
     }
 
     // Response Header에 Server-Port를 추가
