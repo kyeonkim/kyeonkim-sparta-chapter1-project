@@ -8,6 +8,7 @@ import com.sparta.msa_exam.order.dto.OrderRequestDto;
 import com.sparta.msa_exam.order.dto.OrderResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -30,6 +31,7 @@ public class OrderService {
     }
 
     // 주문에 상품 추가 비즈니스 로직
+    @Transactional
     public void addProductToOrder(Long orderId, Long productId) {
         Order order = orderRepository
                 .findById(orderId)
