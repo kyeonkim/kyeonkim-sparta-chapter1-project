@@ -16,11 +16,11 @@ public class ProductController {
 
     private final ProductService productService;
 
-    private final String serverPort;
+    @Value("${server.port}")
+    private String serverPort;
 
-    public ProductController(ProductService productService, @Value("19093") String serverPort) {
+    public ProductController(ProductService productService) {
         this.productService = productService;
-        this.serverPort = serverPort;
     }
 
     // 상품 추가
