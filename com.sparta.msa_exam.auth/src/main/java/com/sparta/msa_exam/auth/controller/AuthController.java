@@ -19,6 +19,6 @@ public class AuthController {
     @PostMapping("/signIn")
     public ResponseEntity<?> createAuthenticationToken(@RequestParam("user_id") String userId) {
         String token = authService.signIn(userId);
-        return ResponseEntity.ok(new AuthResponse(token));
+        return ResponseEntity.ok(new AuthResponse("Bearer " + token));
     }
 }
