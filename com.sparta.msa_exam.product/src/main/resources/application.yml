@@ -15,6 +15,12 @@ spring:
     show-sql: true
 server:
   port: 19093
+
+management:
+  zipkin:
+    tracing:
+      endpoint: "http://localhost:9411/api/v2/spans"
+
 eureka:
   client:
     service-url:
