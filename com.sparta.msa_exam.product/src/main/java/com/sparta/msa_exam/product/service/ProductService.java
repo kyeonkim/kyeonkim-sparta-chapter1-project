@@ -5,6 +5,7 @@ import com.sparta.msa_exam.product.domain.ProductRepository;
 import com.sparta.msa_exam.product.dto.ProductRequestDto;
 import com.sparta.msa_exam.product.dto.ProductResponseDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,13 +20,14 @@ public class ProductService {
     private final ProductRepository productRepository;
 
     // 상품 추가 비즈니스 로직
+    @CacheEvict(cacheNames = "productsCache", allEntries = true)
     @Transactional
     public void createProduct(ProductRequestDto productRequestDto) {
         productRepository.save(Product.createProduct(productRequestDto));
     }
 
     // 상품 조회 비즈니스 로직
-    @Cacheable(cacheNames = "productsCache", key = "getMethodName()")
+    @Cacheable(cacheNames = "productsCache")
     public List<ProductResponseDto> getProducts() {
         List<Product> productList = productRepository.findAll();
         List<ProductResponseDto> responseDtoList = new ArrayList<>();
