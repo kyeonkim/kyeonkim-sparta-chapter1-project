@@ -1,18 +1,16 @@
 spring:
   application:
     name: order-service
-  datasource:
-    url: jdbc:mysql://localhost:3306/msa_exam
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: password
+  profiles:
+    default: dev
   jpa:
     hibernate:
       ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
-    show-sql: true
+    show-sql: false
+
 server:
   port: 19092
 

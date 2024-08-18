@@ -1,24 +1,15 @@
 spring:
   application:
     name: product-service
-  datasource:
-    url: jdbc:mysql://localhost:3306/msa_exam
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: password
+  profiles:
+    default: dev
   jpa:
     hibernate:
       ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
-    show-sql: true
-  data:
-    redis:
-      host: localhost
-      port: 6379
-      username: default
-      password: systempass
+    show-sql: false
 
 server:
   port: 19093
