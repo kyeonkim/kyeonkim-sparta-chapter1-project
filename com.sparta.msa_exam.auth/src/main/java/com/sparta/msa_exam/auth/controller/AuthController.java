@@ -1,24 +1,41 @@
 package com.sparta.msa_exam.auth.controller;
 
+import com.sparta.msa_exam.auth.dto.AuthRequest;
 import com.sparta.msa_exam.auth.dto.AuthResponse;
 import com.sparta.msa_exam.auth.service.AuthService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/auth")
 public class AuthController {
 
     private final AuthService authService;
+    private final String serverPort;
+
+    public AuthController(AuthService authService, @Value("19095") String serverPort) {
+        this.authService = authService;
+        this.serverPort = serverPort;
+    }
 
     @PostMapping("/signIn")
-    public ResponseEntity<?> createAuthenticationToken(@RequestParam("user_id") String userId) {
-        String token = authService.signIn(userId);
-        return ResponseEntity.ok(new AuthResponse("Bearer " + token));
+    public ResponseEntity<AuthResponse> createAuthenticationToken(@RequestParam("user_id") String userId) {
+        AuthResponse response = authService.createAccessToken(userId);
+        return createResponse(ResponseEntity.ok(response));
+    }
+
+    @PostMapping("/signUp")
+    public ResponseEntity<Boolean> createUser(@RequestBody AuthRequest authRequest) {
+        authService.createUser(authRequest);
+        return createResponse(ResponseEntity.ok(true));
+    }
+
+
+    public <T> ResponseEntity<T> createResponse(ResponseEntity<T> response) {
+        HttpHeaders headers = HttpHeaders.writableHttpHeaders(response.getHeaders());
+        headers.set("Server-Port", serverPort);
+        return new ResponseEntity<>(response.getBody(), headers, response.getStatusCode());
     }
 }
