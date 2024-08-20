@@ -20,7 +20,13 @@ public class AuthController {
         this.serverPort = serverPort;
     }
 
-    @PostMapping("/signIn")
+    @GetMapping("/verify")
+    public ResponseEntity<Boolean> verifyUser(@RequestParam("user_id") String userId) {
+        Boolean response = authService.verifyUser(userId);
+        return createResponse(ResponseEntity.ok(response));
+    }
+
+    @GetMapping("/signIn")
     public ResponseEntity<AuthResponse> createAuthenticationToken(@RequestParam("user_id") String userId) {
         AuthResponse response = authService.createAccessToken(userId);
         return createResponse(ResponseEntity.ok(response));

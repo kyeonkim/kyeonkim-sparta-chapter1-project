@@ -52,4 +52,8 @@ public class AuthService {
     public void createUser(AuthRequest authRequest) {
         userRepository.save(User.createUser(authRequest.getUserId()));
     }
+
+    public Boolean verifyUser(String userId) {
+        return userRepository.findByUserId(userId).isPresent();
+    }
 }

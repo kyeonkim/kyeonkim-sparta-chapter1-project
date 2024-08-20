@@ -1,14 +1,15 @@
 package com.sparta.msa_exam.gateway;
 
+import com.sparta.msa_exam.gateway.client.AuthClient;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
@@ -16,17 +17,24 @@ import reactor.core.publisher.Mono;
 
 import javax.crypto.SecretKey;
 
-@Slf4j
 @Component
 public class LocalJwtAuthenticationFilter implements GlobalFilter {
 
-    @Value("${service.jwt.secret-key}")
-    private String secretKey;
+    private final AuthClient authClient;
+
+    private final String secretKey;
+
+    public LocalJwtAuthenticationFilter(@Value("${service.jwt.secret-key}") String secretKey,
+                                        @Lazy AuthClient authClient)
+    {
+        this.secretKey = secretKey;
+        this.authClient = authClient;
+    }
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         String path = exchange.getRequest().getURI().getPath();
-        if (path.equals("/auth/signIn") || path.equals("/auth/signUp")) {
+        if (path.startsWith("/auth")) {
             return chain.filter(exchange);
         }
 
@@ -54,18 +62,15 @@ public class LocalJwtAuthenticationFilter implements GlobalFilter {
             Jws<Claims> claimsJws = Jwts.parser()
                     .verifyWith(key)
                     .build().parseSignedClaims(token);
-            log.info("#####payload :: " + claimsJws.getPayload().toString());
-            Claims claims = claimsJws.getBody();
-            exchange.getRequest().mutate()
-                    .header("X-User-Id", claims.get("user_id").toString())
-                    .build();
-            // 추가적인 검증 로직 (예: 토큰 만료 여부 확인 등)을 여기에 추가
-            return true;
+            if (claimsJws.getPayload().get("user_id") != null) {
+                String userId = claimsJws.getPayload().get("user_id").toString();
+                return authClient.verifyUser(userId);
+            }
+            else {
+                return false;
+            }
         } catch (Exception e) {
             return false;
         }
     }
-
-
-
 }
